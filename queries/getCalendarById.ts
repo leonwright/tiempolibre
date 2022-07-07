@@ -5,7 +5,6 @@ const getUserCalendar = async (id: string) => {
 };
 
 export const getCalendarByIdQuery = (id: string) => {
-  console.log(id);
   return useQuery(
     `user-calendar-${id}`,
     getUserCalendar.bind(null, id),

@@ -1,12 +1,12 @@
-import { Label, Textarea, Button } from "flowbite-react";
-import { useState } from "react";
-import DatePicker from "react-datepicker";
-import { collection, setDoc, doc } from "firebase/firestore";
-import { firestore } from "../firebase/clientApp";
 import { useUser } from "@auth0/nextjs-auth0";
-import { Formik, useFormikContext, useField, FormikHelpers } from "formik";
+import { collection, doc, setDoc } from "firebase/firestore";
+import { Button, Label, Textarea } from "flowbite-react";
+import { Formik, FormikHelpers, useField, useFormikContext } from "formik";
+import DatePicker from "react-datepicker";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { v4 as uuid } from "uuid";
-import { getCalendarByIdQuery, getUserCalendarsQuery } from "../queries";
+import { selectedCalendarState } from "../../atoms";
+import { firestore } from "../../firebase/clientApp";
 
 // interface for the form
 interface FormValues {
@@ -31,22 +31,10 @@ const DatePickerField = ({ ...props }: any) => {
 };
 
 export const CreateEvent = () => {
-  // Queries
-  const {
-    isLoading,
-    isError,
-    data: calendars,
-    error,
-    refetch,
-  } = getUserCalendarsQuery();
-  const primaryCalendar = calendars.find((calendar: any) => calendar.primary);
-  const calendarId = primaryCalendar?.id!;
-  const { data: calendar } = getCalendarByIdQuery(calendarId);
-
-  console.log(calendar);
-
-  const [startDate, setStartDate] = useState(new Date());
+  let calendarId;
   const { user, error: userError, isLoading: isUserLoading } = useUser();
+  const externalCalendar = useRecoilValue(selectedCalendarState);
+
   const userId = user?.sub as string;
   const initialFormValues: FormValues = {
     title: "",
@@ -58,11 +46,13 @@ export const CreateEvent = () => {
     values: FormValues,
     { setSubmitting, resetForm }: FormikHelpers<FormValues>
   ) => {
+    console.log(externalCalendar);
     const newEvent = {
       title: values.title,
       description: values.description,
       date: values.date,
       createdBy: user?.sub,
+      externalCalendarId: externalCalendar.id,
     };
 
     const eventId = uuid();

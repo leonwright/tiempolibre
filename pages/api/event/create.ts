@@ -1,10 +1,7 @@
-import {
-  getAccessToken,
-  getSession,
-  withApiAuthRequired,
-} from "@auth0/nextjs-auth0";
+import { getSession, withApiAuthRequired } from "@auth0/nextjs-auth0";
 import { ManagementClient } from "auth0";
 import {
+  createCalendarEvent,
   getCalendar,
   getGoogleAuthenticationToken,
 } from "../../../utils/googleCalendar";
@@ -17,25 +14,16 @@ const management = new ManagementClient({
 });
 
 export default withApiAuthRequired(async function ProtectedRoute(req, res) {
+  if (req.method !== "POST") {
+    res.status(405).send({ message: "Only POST requests allowed" });
+    return;
+  }
   const session = getSession(req, res);
-  const accessToken = getAccessToken(req, res);
-
-  console.log(accessToken);
   const userInfo = await management.getUser({ id: session!.user.sub });
 
-  const calendar = await getCalendar(
+  createCalendarEvent(
     getGoogleAuthenticationToken(userInfo.identities!)!,
-    req.query.id as string
-  );
-
-  res.json(
-    calendar.data.items?.map((event) => {
-      return {
-        title: event.summary,
-        start: event.start?.dateTime,
-        end: event.end?.dateTime,
-        description: event.description,
-      };
-    })
+    req.body.calendarId,
+    req.body.event
   );
 });

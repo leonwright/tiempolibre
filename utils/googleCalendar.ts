@@ -40,16 +40,39 @@ export const getCalendar = async (token: string, calendarId: string) => {
     singleEvents: true,
     timeMin: today.toISOString(),
   });
-  console.log(
-    calendar.data.items?.map((event) => {
-      return {
-        title: event.summary,
-        start: event.start?.dateTime,
-        end: event.end?.dateTime,
-        description: event.description,
-      };
-    })
-  );
+  // console.log(
+  //   calendar.data.items?.map((event) => {
+  //     return {
+  //       title: event.summary,
+  //       start: event.start?.dateTime,
+  //       end: event.end?.dateTime,
+  //       description: event.description,
+  //     };
+  //   })
+  // );
 
   return calendar;
+};
+
+// create calendar event
+export const createCalendarEvent = async (
+  token: string,
+  calendarId: string,
+  event: calendar_v3.Schema$Event
+) => {
+  const createdEvent = await new calendar_v3.Resource$Events({
+    _options: {
+      headers: {
+        authorization: "Bearer " + token,
+      },
+    },
+  }).insert({
+    calendarId,
+    requestBody: {
+      eventType: "regular",
+      summary: event.summary,
+    },
+  });
+
+  console.log(createdEvent);
 };

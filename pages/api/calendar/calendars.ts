@@ -1,4 +1,8 @@
-import { withApiAuthRequired, getSession } from "@auth0/nextjs-auth0";
+import {
+  withApiAuthRequired,
+  getSession,
+  getAccessToken,
+} from "@auth0/nextjs-auth0";
 import { ManagementClient } from "auth0";
 import {
   getCalendars,
@@ -14,6 +18,9 @@ const management = new ManagementClient({
 
 export default withApiAuthRequired(async function ProtectedRoute(req, res) {
   const session = getSession(req, res);
+  const accessToken = getAccessToken(req, res);
+
+  console.log(accessToken);
   const userInfo = await management.getUser({ id: session!.user.sub });
 
   const calendars = await getCalendars(
