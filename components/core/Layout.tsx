@@ -1,6 +1,7 @@
 // create next layout component
 import { useUser } from "@auth0/nextjs-auth0";
 import { DarkThemeToggle } from "flowbite-react";
+import Link from "next/link";
 
 // props interface
 interface Props {
@@ -57,13 +58,11 @@ export const Layout = ({ children }: Props) => {
           <div className="hidden w-full md:block md:w-auto" id="mobile-menu">
             <ul className="flex flex-col mt-4 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium justify-center items-center">
               <li>
-                <a
-                  href="#"
-                  className="block py-2 pr-4 pl-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white"
-                  aria-current="page"
-                >
-                  Home
-                </a>
+                <Link href="#" aria-current="page">
+                  <a className="block py-2 pr-4 pl-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white">
+                    Home
+                  </a>
+                </Link>
               </li>
               {user ? (
                 <li>

@@ -5,6 +5,8 @@ import { firestore } from "../../firebase/clientApp";
 import moment from "moment";
 import { AppEvent, EventRow } from "./EventRow";
 import { useDeleteCalendarMutation } from "../../mutations/deleteCalendarMutation";
+import { useMemo } from "react";
+import { getCalendarByIdQuery } from "../../queries";
 
 export const ViewEvents = () => {
   const { user, error, isLoading } = useUser();
@@ -15,9 +17,13 @@ export const ViewEvents = () => {
     {}
   );
 
-  const eventList: AppEvent[] = events?.docs.map((doc) => {
-    return { id: doc.id, ...doc.data() };
-  }) as AppEvent[];
+  console.log("view events");
+
+  const eventList: AppEvent[] = useMemo(() => {
+    return events?.docs.map((doc) => {
+      return { id: doc.id, ...doc.data() };
+    }) as AppEvent[];
+  }, [events]);
 
   return (
     <>

@@ -1,4 +1,4 @@
-import { useUser } from "@auth0/nextjs-auth0";
+import { UserProfile, useUser } from "@auth0/nextjs-auth0";
 import { collection, doc, setDoc } from "firebase/firestore";
 import { Button, Label, Textarea } from "flowbite-react";
 import { Formik, FormikHelpers, useField, useFormikContext } from "formik";
@@ -8,6 +8,7 @@ import { v4 as uuid } from "uuid";
 import { selectedCalendarState } from "../../atoms";
 import { firestore } from "../../firebase/clientApp";
 import { useCreateCalendarMutation } from "../../mutations/createCalendarMutation";
+import { SelectCalendar } from "../selectCalendar";
 
 // interface for the form
 interface FormValues {
@@ -168,6 +169,9 @@ export const CreateEvent = () => {
                       <option value="day">Days</option>
                     </select>
                   </div>
+                </div>
+                <div>
+                  <SelectCalendar />
                 </div>
                 <div>
                   <div id="textarea">
