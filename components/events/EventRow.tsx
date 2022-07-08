@@ -5,7 +5,7 @@ export interface AppEvent {
   title: string;
   description: string;
   date: { nanoseconds: number; seconds: number };
-  delete: (id: string) => void;
+  delete: (event: any) => void;
 }
 
 export const EventRow = (props: AppEvent) => {
@@ -33,10 +33,7 @@ export const EventRow = (props: AppEvent) => {
         {props.title}
       </th>
       <td className="px-6 py-4">{date}</td>
-      <td
-        className="px-6 py-4 text-right"
-        onClick={() => props.delete(props.id)}
-      >
+      <td className="px-6 py-4 text-right" onClick={() => props.delete(props)}>
         <a
           href="#"
           className="font-medium text-red-600 dark:text-red-500 hover:underline"

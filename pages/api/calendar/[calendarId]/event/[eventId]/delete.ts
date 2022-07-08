@@ -14,14 +14,15 @@ export default withApiAuthRequired(async function ProtectedRoute(req, res) {
     res.status(405).send({ message: "Only DELETE requests allowed" });
     return;
   }
+  console.log(req.query);
   const session = getSession(req, res);
   const userInfo = await management.getUser({ id: session!.user.sub });
 
-  const googleEvent = await googleCalendar.deleteGoogleCalendarEvent(
+  await googleCalendar.deleteGoogleCalendarEvent(
     googleCalendar.getGoogleAuthenticationToken(userInfo.identities!)!,
     req.query.calendarId as string,
     req.query.eventId as string
   );
 
-  res.json(googleEvent);
+  res.json({ message: "Event deleted" });
 });

@@ -4,9 +4,11 @@ import { useCollection } from "react-firebase-hooks/firestore";
 import { firestore } from "../../firebase/clientApp";
 import moment from "moment";
 import { AppEvent, EventRow } from "./EventRow";
+import { useDeleteCalendarMutation } from "../../mutations/deleteCalendarMutation";
 
 export const ViewEvents = () => {
   const { user, error, isLoading } = useUser();
+  const calendarMutation = useDeleteCalendarMutation();
   const userId = user?.sub as string;
 
   const [events, eventsLoading, eventsError] = useCollection(
@@ -18,9 +20,8 @@ export const ViewEvents = () => {
     return { id: doc.id, ...doc.data() };
   }) as AppEvent[];
 
-  const deleteDocument = async (id: string) => {
-    const collectionPath = `users/${userId}/events`;
-    await deleteDoc(doc(firestore, collectionPath, id));
+  const deleteDocument = async (event: any) => {
+    calendarMutation.mutate(event);
   };
 
   return (

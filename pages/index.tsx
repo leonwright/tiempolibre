@@ -1,5 +1,10 @@
-import type { NextPage } from "next";
-import { useUser } from "@auth0/nextjs-auth0";
+import type { GetServerSideProps, NextPage } from "next";
+import {
+  getSession,
+  UserProfile,
+  useUser,
+  withPageAuthRequired,
+} from "@auth0/nextjs-auth0";
 import { CreateEvent, Layout, ViewEvents } from "../components";
 import { Card } from "flowbite-react";
 
@@ -9,8 +14,14 @@ import { useRecoilState } from "recoil";
 import { selectedCalendarState } from "../atoms";
 import { ReactNode, useEffect } from "react";
 
-const Home: NextPage = () => {
-  const { user, error, isLoading } = useUser();
+interface PageProps {
+  user: UserProfile;
+}
+
+// get user calendars ssr
+export const getServerSideProps = withPageAuthRequired();
+
+function Home({ user }: PageProps) {
   const {
     isLoading: calendarsLoading,
     data: calendars,
@@ -35,9 +46,6 @@ const Home: NextPage = () => {
       }
     }
   }, [calendarsLoading]);
-
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>{error.message}</div>;
 
   const renderSelectOptions = (_calendars: any): ReactNode => {
     return _calendars?.map((calendar: any): ReactNode => {
@@ -100,6 +108,6 @@ const Home: NextPage = () => {
       </div>
     </Layout>
   );
-};
+}
 
 export default Home;

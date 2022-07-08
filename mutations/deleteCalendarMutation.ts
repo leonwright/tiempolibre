@@ -9,7 +9,7 @@ export const useDeleteCalendarMutation = () => {
     console.log(event);
     // post to /api/events/create
     return fetch(
-      `/api/calendar/${event.externalCalendarId}/event/${event.eventId}`,
+      `/api/calendar/${event.externalCalendarId}/event/${event.eventId}/delete`,
       {
         method: "DELETE",
         headers: {
@@ -21,11 +21,13 @@ export const useDeleteCalendarMutation = () => {
   return useMutation(deleteCalendarMutation, {
     onSuccess: async (data, variables, context) => {
       console.log("Calendar deleted");
-      const apiResp = await data.json();
+      console.log(variables);
       const collectionPath = `users/${variables.createdBy}/events`;
-      await deleteDoc(
-        doc(firestore, collectionPath, variables.firestoreEventId)
-      );
+      try {
+        await deleteDoc(doc(firestore, collectionPath, variables.id));
+      } catch (e) {
+        console.log(e);
+      }
     },
   });
 };
