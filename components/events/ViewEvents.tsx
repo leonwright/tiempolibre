@@ -67,6 +67,7 @@ export const ViewEvents = () => {
                 <EventRow
                   key={event.title}
                   {...event}
+                  isDeleting={calendarMutation.isLoading}
                   delete={deleteDocument}
                 />
               ))
