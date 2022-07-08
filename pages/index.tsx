@@ -16,7 +16,6 @@ const Home: NextPage = (props) => {
     isError: isCalendarsError,
     data: calendars,
     error: calendarsError,
-    refetch,
   } = getUserCalendarsQuery();
 
   const [calendarState, setCalendarState] = useRecoilState(
