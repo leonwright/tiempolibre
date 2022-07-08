@@ -14,6 +14,8 @@ interface FormValues {
   title: string;
   description: string;
   date: Date;
+  duration: number;
+  durationUnit: string;
 }
 
 const DatePickerField = ({ ...props }: any) => {
@@ -41,18 +43,19 @@ export const CreateEvent = () => {
     title: "",
     description: "",
     date: new Date(),
+    duration: 1,
+    durationUnit: "hour",
   };
 
   const handleCreateEvent = async (
     values: FormValues,
     { setSubmitting, resetForm }: FormikHelpers<FormValues>
   ) => {
+    console.log("handleCreateEvent", values);
     const newEvent = {
-      title: values.title,
-      description: values.description,
-      date: values.date,
       createdBy: user?.sub,
       externalCalendarId: externalCalendar.id,
+      ...values,
     };
 
     const eventId = uuid();
@@ -81,7 +84,7 @@ export const CreateEvent = () => {
           /* and other goodies */
         }) => (
           <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-            <div className="grid gap-6 lg:grid-cols-2">
+            <div className="grid gap-6 lg:grid-cols-4">
               <div>
                 <div className="mb-2 block">
                   <Label htmlFor="title" value="Event Name" />
@@ -105,7 +108,43 @@ export const CreateEvent = () => {
                 <DatePickerField
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   name="date"
+                  showTimeSelect
+                  dateFormat="MMMM d, yyyy h:mm aa"
                 />
+              </div>
+              <div>
+                <div className="mb-2 block">
+                  <Label htmlFor="duration" value="Event Duration" />
+                </div>
+                <input
+                  type="number"
+                  id="duration"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  placeholder="1"
+                  required
+                  name="duration"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.duration}
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="selectedCalendar"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400"
+                >
+                  Duration Unit
+                </label>
+                <select
+                  value={values.durationUnit}
+                  id="selectedCalendar"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  onChange={handleChange}
+                >
+                  <option value="minutes">Minutes</option>
+                  <option value="hour">Hours</option>
+                  <option value="day">Days</option>
+                </select>
               </div>
             </div>
             <div>
