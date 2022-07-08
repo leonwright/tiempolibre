@@ -8,7 +8,7 @@ import { v4 as uuid } from "uuid";
 import { selectedCalendarState } from "../../atoms";
 import { firestore } from "../../firebase/clientApp";
 import { useCreateCalendarMutation } from "../../mutations/createCalendarMutation";
-import { SelectCalendar } from "../selectCalendar";
+import { SelectCalendar } from "./../SelectCalendar";
 
 // interface for the form
 interface FormValues {
