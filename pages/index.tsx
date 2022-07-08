@@ -9,11 +9,10 @@ import { useRecoilState } from "recoil";
 import { selectedCalendarState } from "../atoms";
 import { ReactNode, useEffect } from "react";
 
-const Home: NextPage = (props) => {
+const Home: NextPage = () => {
   const { user, error, isLoading } = useUser();
   const {
     isLoading: calendarsLoading,
-    isError: isCalendarsError,
     data: calendars,
     error: calendarsError,
   } = getUserCalendarsQuery();
@@ -23,14 +22,12 @@ const Home: NextPage = (props) => {
   );
 
   useEffect(() => {
-    console.log("test");
     if (!calendarsError && !calendarsLoading && calendars && user) {
       // find primary calendar and set it as the selected calendar
       const primaryCalendar = calendars.find(
         (calendar: any) => calendar.primary
       );
       if (primaryCalendar) {
-        console.log(primaryCalendar);
         setCalendarState({
           id: primaryCalendar.id,
           name: primaryCalendar.name,
@@ -42,17 +39,15 @@ const Home: NextPage = (props) => {
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>{error.message}</div>;
 
-  const renderSelectOptions = (calendars: any): ReactNode => {
-    return calendars?.map((calendar: any): ReactNode => {
+  const renderSelectOptions = (_calendars: any): ReactNode => {
+    return _calendars?.map((calendar: any): ReactNode => {
       return (
         <option key={calendar.id} value={calendar.id}>
-          {calendar.name}
+          {calendar.primary ? "Default Calendar" : calendar.name}
         </option>
       );
     });
   };
-
-  console.log(calendarState);
 
   return (
     <Layout>
@@ -69,7 +64,6 @@ const Home: NextPage = (props) => {
             <select
               value={calendarState.id}
               onChange={(e) => {
-                console.log(e.target.value);
                 setCalendarState({
                   id: e.target.value,
                   name: e.target.options[e.target.selectedIndex].text,

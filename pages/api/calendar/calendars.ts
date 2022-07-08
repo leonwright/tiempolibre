@@ -19,8 +19,6 @@ const management = new ManagementClient({
 export default withApiAuthRequired(async function ProtectedRoute(req, res) {
   const session = getSession(req, res);
   const accessToken = getAccessToken(req, res);
-
-  console.log(accessToken);
   const userInfo = await management.getUser({ id: session!.user.sub });
 
   const calendars = await getCalendars(

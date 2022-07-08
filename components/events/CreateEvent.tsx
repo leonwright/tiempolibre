@@ -3,7 +3,7 @@ import { collection, doc, setDoc } from "firebase/firestore";
 import { Button, Label, Textarea } from "flowbite-react";
 import { Formik, FormikHelpers, useField, useFormikContext } from "formik";
 import DatePicker from "react-datepicker";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilValue } from "recoil";
 import { v4 as uuid } from "uuid";
 import { selectedCalendarState } from "../../atoms";
 import { firestore } from "../../firebase/clientApp";
@@ -31,8 +31,7 @@ const DatePickerField = ({ ...props }: any) => {
 };
 
 export const CreateEvent = () => {
-  let calendarId;
-  const { user, error: userError, isLoading: isUserLoading } = useUser();
+  const { user } = useUser();
   const externalCalendar = useRecoilValue(selectedCalendarState);
 
   const userId = user?.sub as string;
@@ -46,7 +45,6 @@ export const CreateEvent = () => {
     values: FormValues,
     { setSubmitting, resetForm }: FormikHelpers<FormValues>
   ) => {
-    console.log(externalCalendar);
     const newEvent = {
       title: values.title,
       description: values.description,
@@ -72,12 +70,9 @@ export const CreateEvent = () => {
       <Formik initialValues={initialFormValues} onSubmit={handleCreateEvent}>
         {({
           values,
-          errors,
-          touched,
           handleChange,
           handleBlur,
           handleSubmit,
-          isSubmitting,
           /* and other goodies */
         }) => (
           <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
