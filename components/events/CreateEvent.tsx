@@ -43,28 +43,19 @@ export const CreateEvent = () => {
     title: "",
     description: "",
     date: new Date(),
-    duration: 1,
-    durationUnit: "hour",
+    duration: 30,
+    durationUnit: "minutes",
   };
 
   const handleCreateEvent = async (
     values: FormValues,
     { setSubmitting, resetForm }: FormikHelpers<FormValues>
   ) => {
-    console.log("handleCreateEvent", values);
     const newEvent = {
-      createdBy: user?.sub,
+      createdBy: userId,
       externalCalendarId: externalCalendar.id,
       ...values,
     };
-
-    const eventId = uuid();
-    const collectionPath = `users/${userId}/events`;
-    const col = collection(firestore, collectionPath);
-    const eventRef = doc(firestore, col.path, eventId);
-    await setDoc(eventRef, newEvent, {
-      merge: true,
-    });
 
     calendarMutation.mutate(newEvent);
 
@@ -130,16 +121,17 @@ export const CreateEvent = () => {
               </div>
               <div>
                 <label
-                  htmlFor="selectedCalendar"
+                  htmlFor="durationUnit"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400"
                 >
                   Duration Unit
                 </label>
                 <select
-                  value={values.durationUnit}
-                  id="selectedCalendar"
+                  id="durationUnit"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   onChange={handleChange}
+                  name="durationUnit"
+                  value={values.durationUnit}
                 >
                   <option value="minutes">Minutes</option>
                   <option value="hour">Hours</option>

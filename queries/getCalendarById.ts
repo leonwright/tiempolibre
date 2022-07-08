@@ -1,7 +1,7 @@
 import { useQuery } from "react-query";
 
 const getUserCalendar = async (id: string) => {
-  return (await fetch(`/api/calendar/${id}`)).json();
+  return (await fetch(`/api/calendar/${id}/event/list`)).json();
 };
 
 export const getCalendarByIdQuery = (id: string) => {

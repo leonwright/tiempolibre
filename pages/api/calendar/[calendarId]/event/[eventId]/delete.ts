@@ -1,10 +1,6 @@
-import {
-  getAccessToken,
-  getSession,
-  withApiAuthRequired,
-} from "@auth0/nextjs-auth0";
+import { getSession, withApiAuthRequired } from "@auth0/nextjs-auth0";
 import { ManagementClient } from "auth0";
-import { googleCalendar } from "../../../utils";
+import { googleCalendar } from "../../../../../../utils";
 
 const management = new ManagementClient({
   domain: "tiempolibre.us.auth0.com",
@@ -14,22 +10,18 @@ const management = new ManagementClient({
 });
 
 export default withApiAuthRequired(async function ProtectedRoute(req, res) {
+  if (req.method !== "DELETE") {
+    res.status(405).send({ message: "Only DELETE requests allowed" });
+    return;
+  }
   const session = getSession(req, res);
   const userInfo = await management.getUser({ id: session!.user.sub });
 
-  const calendar = await googleCalendar.getGoogleCalendarEvents(
+  const googleEvent = await googleCalendar.deleteGoogleCalendarEvent(
     googleCalendar.getGoogleAuthenticationToken(userInfo.identities!)!,
-    req.query.id as string
+    req.query.calendarId as string,
+    req.query.eventId as string
   );
 
-  res.json(
-    calendar.data.items?.map((event: any) => {
-      return {
-        title: event.summary,
-        start: event.start?.dateTime,
-        end: event.end?.dateTime,
-        description: event.description,
-      };
-    })
-  );
+  res.json(googleEvent);
 });

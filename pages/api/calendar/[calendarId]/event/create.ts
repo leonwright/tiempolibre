@@ -1,7 +1,7 @@
 import { getSession, withApiAuthRequired } from "@auth0/nextjs-auth0";
 import { ManagementClient } from "auth0";
-import { createGoogleCalendarEvent } from "../../../utils/google-calendar/createGoogleCalendarEvent";
-import { googleCalendar } from "../../../utils";
+import { createGoogleCalendarEvent } from "../../../../../utils/google-calendar/createGoogleCalendarEvent";
+import { googleCalendar } from "../../../../../utils";
 
 const management = new ManagementClient({
   domain: "tiempolibre.us.auth0.com",
@@ -18,11 +18,11 @@ export default withApiAuthRequired(async function ProtectedRoute(req, res) {
   const session = getSession(req, res);
   const userInfo = await management.getUser({ id: session!.user.sub });
 
-  await googleCalendar.createGoogleCalendarEvent(
+  const googleEvent = await googleCalendar.createGoogleCalendarEvent(
     googleCalendar.getGoogleAuthenticationToken(userInfo.identities!)!,
-    req.body.externalCalendarId,
+    req.query.calendarId as string,
     req.body
   );
 
-  res.json({ message: "Event created" });
+  res.json(googleEvent);
 });

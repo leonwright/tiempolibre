@@ -1,7 +1,7 @@
 import { useQuery } from "react-query";
 
 const getUserCalendars = async () => {
-  return (await fetch(`/api/calendar/calendars`)).json();
+  return (await fetch(`/api/calendar/list`)).json();
 };
 
 export const getUserCalendarsQuery = () =>
