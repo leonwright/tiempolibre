@@ -7,6 +7,7 @@ import { useRecoilValue } from "recoil";
 import { v4 as uuid } from "uuid";
 import { selectedCalendarState } from "../../atoms";
 import { firestore } from "../../firebase/clientApp";
+import { useCreateCalendarMutation } from "../../mutations/createCalendarMutation";
 
 // interface for the form
 interface FormValues {
@@ -32,6 +33,7 @@ const DatePickerField = ({ ...props }: any) => {
 
 export const CreateEvent = () => {
   const { user } = useUser();
+  const calendarMutation = useCreateCalendarMutation();
   const externalCalendar = useRecoilValue(selectedCalendarState);
 
   const userId = user?.sub as string;
@@ -60,6 +62,9 @@ export const CreateEvent = () => {
     await setDoc(eventRef, newEvent, {
       merge: true,
     });
+
+    calendarMutation.mutate(newEvent);
+
     setSubmitting(false);
     resetForm();
   };

@@ -4,10 +4,7 @@ import {
   getAccessToken,
 } from "@auth0/nextjs-auth0";
 import { ManagementClient } from "auth0";
-import {
-  getCalendars,
-  getGoogleAuthenticationToken,
-} from "../../../utils/googleCalendar";
+import { googleCalendar } from "../../../utils";
 
 const management = new ManagementClient({
   domain: "tiempolibre.us.auth0.com",
@@ -21,8 +18,8 @@ export default withApiAuthRequired(async function ProtectedRoute(req, res) {
   const accessToken = getAccessToken(req, res);
   const userInfo = await management.getUser({ id: session!.user.sub });
 
-  const calendars = await getCalendars(
-    getGoogleAuthenticationToken(userInfo.identities!)!
+  const calendars = await googleCalendar.getGoogleCalendars(
+    googleCalendar.getGoogleAuthenticationToken(userInfo.identities!)!
   );
 
   res.json(
