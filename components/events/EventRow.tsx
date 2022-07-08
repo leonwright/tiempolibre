@@ -1,15 +1,18 @@
 import moment from "moment";
+import { useDeleteCalendarMutation } from "../../mutations/deleteCalendarMutation";
 
 export interface AppEvent {
   id: string;
   title: string;
   description: string;
   date: { nanoseconds: number; seconds: number };
-  delete: (event: any) => void;
-  isDeleting: boolean;
 }
 
 export const EventRow = (props: AppEvent) => {
+  const calendarMutation = useDeleteCalendarMutation();
+  const deleteDocument = async (event: any) => {
+    calendarMutation.mutate(event);
+  };
   const date = moment(new Date(props.date.seconds * 1000)).format(
     "MMM Do YYYY"
   );
@@ -34,8 +37,11 @@ export const EventRow = (props: AppEvent) => {
         {props.title}
       </th>
       <td className="px-6 py-4">{date}</td>
-      <td className="px-6 py-4 text-right" onClick={() => props.delete(props)}>
-        {props.isDeleting ? (
+      <td
+        className="px-6 py-4 text-right"
+        onClick={() => deleteDocument(props)}
+      >
+        {calendarMutation.isLoading ? (
           <svg
             role="status"
             className="inline w-4 h-4 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"

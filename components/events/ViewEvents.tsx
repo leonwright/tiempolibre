@@ -8,7 +8,6 @@ import { useDeleteCalendarMutation } from "../../mutations/deleteCalendarMutatio
 
 export const ViewEvents = () => {
   const { user, error, isLoading } = useUser();
-  const calendarMutation = useDeleteCalendarMutation();
   const userId = user?.sub as string;
 
   const [events, eventsLoading, eventsError] = useCollection(
@@ -19,10 +18,6 @@ export const ViewEvents = () => {
   const eventList: AppEvent[] = events?.docs.map((doc) => {
     return { id: doc.id, ...doc.data() };
   }) as AppEvent[];
-
-  const deleteDocument = async (event: any) => {
-    calendarMutation.mutate(event);
-  };
 
   return (
     <>
@@ -64,12 +59,7 @@ export const ViewEvents = () => {
               </tr>
             ) : (
               eventList.map((event) => (
-                <EventRow
-                  key={event.title}
-                  {...event}
-                  isDeleting={calendarMutation.isLoading}
-                  delete={deleteDocument}
-                />
+                <EventRow key={event.title} {...event} />
               ))
             )}
           </tbody>
